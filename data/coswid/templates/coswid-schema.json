@@ -1,0 +1,410 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CoSMID Schema",
+  "type": "object",
+  "properties": {
+    "tag-id": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "tag-version": {
+      "type": "integer"
+    },
+    "corpus": {
+      "type": "boolean"
+    },
+    "patch": {
+      "type": "boolean"
+    },
+    "supplemental": {
+      "type": "boolean"
+    },
+    "software-name": {
+      "type": "string"
+    },
+    "software-version": {
+      "type": "string"
+    },
+    "version-scheme": {
+      "type": "string",
+      "enum": ["multipartnumeric", "multipartnumeric-suffix", "alphanumeric", "decimal", "semver"]
+    },
+    "media": {
+      "type": "string"
+    },
+    "software-meta": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "activation-status": {
+            "type": "string"
+          },
+          "channel-type": {
+            "type": "string"
+          },
+          "colloquial-version": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "edition": {
+            "type": "string"
+          },
+          "entitlement-data-required": {
+            "type": "boolean"
+          },
+          "entitlement-key": {
+            "type": "string"
+          },
+          "generator": {
+            "type": ["string", "string"],
+            "pattern": "^[0-9a-fA-F]{32}$"
+          },
+          "persistent-id": {
+            "type": "string"
+          },
+          "product": {
+            "type": "string"
+          },
+          "product-family": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "unspsc-code": {
+            "type": "string"
+          },
+          "unspsc-version": {
+            "type": "string"
+          }
+        },
+        "required": ["activation-status", "channel-type", "colloquial-version", "description", "edition", "entitlement-data-required", "entitlement-key", "generator", "persistent-id", "product", "product-family", "revision", "summary", "unspsc-code", "unspsc-version"]
+      }
+    },
+    "entity": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "entity-name": {
+            "type": "string"
+          },
+          "reg-id": {
+            "type": "string",
+            "format": "uri"
+          },
+          "role": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["tag-creator", "software-creator", "aggregator", "distributor", "licensor", "maintainer"]
+            }
+          },
+          "thumbprint": {
+            "type": "object",
+            "properties": {
+              "hash-alg-id": {
+                "type": "integer"
+              },
+              "hash-value": {
+                "type": "string"
+              }
+            },
+            "required": ["hash-alg-id", "hash-value"]
+          }
+        },
+        "required": ["entity-name", "role"]
+      }
+    },
+    "link": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "artifact": {
+            "type": "string"
+          },
+          "href": {
+            "type": "string",
+            "format": "uri"
+          },
+          "media": {
+            "type": "string"
+          },
+          "ownership": {
+            "type": "string",
+            "enum": ["shared", "private", "abandon"]
+          },
+          "rel": {
+            "type": "string",
+            "enum": ["ancestor", "component", "feature", "installationmedia", "packageinstaller", "parent", "patches", "requires", "see-also", "supersedes", "supplemental"]
+          },
+          "media-type": {
+            "type": "string"
+          },
+          "use": {
+            "type": "string",
+            "enum": ["optional", "required", "recommended"]
+          },
+          "thumbprint": {
+            "type": "object",
+            "properties": {
+              "hash-alg-id": {
+                "type": "integer"
+              },
+              "hash-value": {
+                "type": "string"
+              }
+            },
+            "required": ["hash-alg-id", "hash-value"]
+          }
+        },
+        "required": ["href", "rel"]
+      }
+    },
+    "payload": {
+      "type": "object",
+      "properties": {
+        "resource-collection": {
+          "type": "object",
+          "properties": {
+            "directory": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "boolean"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "fs-name": {
+                    "type": "string"
+                  },
+                  "root": {
+                    "type": "string"
+                  },
+                  "path-elements": {
+                    "type": "object",
+                    "properties": {
+                      "directory": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "file": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": ["fs-name"]
+              }
+            },
+            "file": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "boolean"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "fs-name": {
+                    "type": "string"
+                  },
+                  "root": {
+                    "type": "string"
+                  },
+                  "size": {
+                    "type": "integer"
+                  },
+                  "file-version": {
+                    "type": "string"
+                  },
+                  "hash": {
+                    "type": "object",
+                    "properties": {
+                      "hash-alg-id": {
+                        "type": "integer"
+                      },
+                      "hash-value": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["hash-alg-id", "hash-value"]
+                  }
+                },
+                "required": ["fs-name"]
+              }
+            },
+            "process": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "process-name": {
+                    "type": "string"
+                  },
+                  "pid": {
+                    "type": "integer"
+                  }
+                },
+                "required": ["process-name"]
+              }
+            },
+            "resource": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  }
+                },
+                "required": ["type"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "resource-collection": {
+          "type": "object",
+          "properties": {
+            "directory": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "boolean"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "fs-name": {
+                    "type": "string"
+                  },
+                  "root": {
+                    "type": "string"
+                  },
+                  "path-elements": {
+                    "type": "object",
+                    "properties": {
+                      "directory": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "file": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": ["fs-name"]
+              }
+            },
+            "file": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "boolean"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "fs-name": {
+                    "type": "string"
+                  },
+                  "root": {
+                    "type": "string"
+                  },
+                  "size": {
+                    "type": "integer"
+                  },
+                  "file-version": {
+                    "type": "string"
+                  },
+                  "hash": {
+                    "type": "object",
+                    "properties": {
+                      "hash-alg-id": {
+                        "type": "integer"
+                      },
+                      "hash-value": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["hash-alg-id", "hash-value"]
+                  }
+                },
+                "required": ["fs-name"]
+              }
+            },
+            "process": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "process-name": {
+                    "type": "string"
+                  },
+                  "pid": {
+                    "type": "integer"
+                  }
+                },
+                "required": ["process-name"]
+              }
+            },
+            "resource": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  }
+                },
+                "required": ["type"]
+              }
+            }
+          }
+        },
+        "date": {
+          "type": "integer"
+        },
+        "device-id": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": ["tag-id", "tag-version", "software-name", "entity"]
+}

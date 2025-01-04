@@ -1,0 +1,26 @@
+{
+  "tag-id": "123e4567-e89b-12d3-a456-426614174000",
+  "tag-version": 0,
+  "software-name": "Example Software",
+  "profile": "http://example.com/cosmid/profile/1",
+  "validity": {
+    "not-before": "2023-01-01T00:00:00Z",
+    "not-after": "2025-01-01T00:00:00Z"
+  },
+  "entity": [
+    {
+      "entity-name": "Example Ltd.",
+      "reg-id": "https://example.com",
+      "role": ["tag-creator"]
+    }
+  ],
+  "link": [
+    {
+      "href": "https://parent.example/rims/ccb3aa85-61b4-40f1-848e-02ad6e8a254b",
+      "thumbprint": {
+        "hash-alg-id": 1,
+        "hash-value": "5Fty9cDAtXLbTY06t+l/No/3TmI0eoJN7LZ6hOUiTXU="
+      }
+    }
+  ]
+}
