@@ -1,4 +1,4 @@
-module github.com/priyanshuthapliyal2005/cocli
+module github.com/veraison/cocli
 
 go 1.22
 
