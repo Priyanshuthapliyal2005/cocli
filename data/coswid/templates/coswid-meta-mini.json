@@ -1,6 +1,8 @@
 {
   "signer": {
-    "entity-name": "Example Ltd signing key",
-    "role": ["tag-creator"]
+      "entity-name": "Example Ltd signing key",
+      "role": [
+          "tag-creator"
+      ]
   }
 }

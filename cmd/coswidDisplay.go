@@ -31,18 +31,19 @@ Display CoSWIDs in files s1.cbor, s2.cbor and any cbor file in the coswids/ dire
   cocli coswid display --file=s1.cbor --file=s2.cbor --dir=coswids
 `,
     RunE: func(cmd *cobra.Command, args []string) error {
+        // Validate input arguments
         if err := checkCoswidDisplayArgs(); err != nil {
             return err
         }
 
         filesList := gatherFiles([]string{coswidDisplayFile}, []string{coswidDisplayDir}, ".cbor")
         if len(filesList) == 0 {
-            return fmt.Errorf("no files found")
+            return fmt.Errorf("no CoSWID files found")
         }
 
         for _, file := range filesList {
             if err := displayCoswid(file); err != nil {
-                fmt.Printf(">> failed displaying %q: %v\n", file, err)
+                fmt.Printf("Error displaying %s: %v\n", file, err)
             }
         }
 
@@ -58,15 +59,13 @@ func checkCoswidDisplayArgs() error {
 }
 
 func gatherFiles(files []string, dirs []string, ext string) []string {
+    collectedMap := make(map[string]struct{})
     var collected []string
 
     // Collect files from specified file paths
     for _, file := range files {
-        if file != "" {
-            exists, err := afero.Exists(fs, file)
-            if err == nil && exists {
-                collected = append(collected, file)
-            }
+        if filepath.Ext(file) == ext {
+            collectedMap[file] = struct{}{}
         }
     }
 
@@ -77,10 +76,11 @@ func gatherFiles(files []string, dirs []string, ext string) []string {
             if err == nil && exists {
                 afero.Walk(fs, dir, func(path string, info os.FileInfo, err error) error {
                     if err != nil {
+                        fmt.Printf("Error accessing path %s: %v\n", path, err)
                         return nil
                     }
                     if !info.IsDir() && filepath.Ext(path) == ext {
-                        collected = append(collected, path)
+                        collectedMap[path] = struct{}{}
                     }
                     return nil
                 })
@@ -88,28 +88,36 @@ func gatherFiles(files []string, dirs []string, ext string) []string {
         }
     }
 
+    // Convert map keys to slice
+    for file := range collectedMap {
+        collected = append(collected, file)
+    }
+
     return collected
 }
 
-
 func displayCoswid(file string) error {
+    fmt.Printf("Processing file: %s\n", file)
     var (
         coswidCBOR []byte
         s          swid.SoftwareIdentity
         err        error
     )
 
+    // Read the CBOR file
     if coswidCBOR, err = afero.ReadFile(fs, file); err != nil {
-        return fmt.Errorf("error loading CoSWID from %s: %w", file, err)
+        return fmt.Errorf("error reading file %s: %w", file, err)
     }
 
+    // Decode CBOR to SoftwareIdentity
     if err = s.FromCBOR(coswidCBOR); err != nil {
         return fmt.Errorf("error decoding CoSWID from %s: %w", file, err)
     }
 
+    // Convert to JSON
     coswidJSON, err := json.MarshalIndent(&s, "", "  ")
     if err != nil {
-        return fmt.Errorf("error encoding CoSWID from %s: %w", file, err)
+        return fmt.Errorf("error marshaling CoSWID to JSON: %w", err)
     }
 
     fmt.Printf(">> [%s]\n%s\n", file, string(coswidJSON))
