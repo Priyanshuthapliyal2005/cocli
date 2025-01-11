@@ -1,8 +1,11 @@
 package cmd
 
 import (
-    "encoding/json"
     "fmt"
+    "os"
+    "path/filepath"
+    "encoding/json"
+
     "github.com/spf13/afero"
     "github.com/spf13/cobra"
     "github.com/veraison/swid"
@@ -15,8 +18,8 @@ var (
 
 var coswidDisplayCmd = &cobra.Command{
     Use:   "display",
-    Short: "display one or more CBOR-encoded CoSWID(s) in human readable (JSON) format",
-    Long: `display one or more CBOR-encoded CoSWID(s) in human readable (JSON) format.
+    Short: "Display one or more CBOR-encoded CoSWID(s) in human-readable (JSON) format",
+    Long: `Display one or more CBOR-encoded CoSWID(s) in human-readable (JSON) format.
 You can supply individual CoSWID files or directories containing CoSWID files.
 
 Display CoSWID in file s.cbor.
@@ -32,7 +35,7 @@ Display CoSWIDs in files s1.cbor, s2.cbor and any cbor file in the coswids/ dire
             return err
         }
 
-        filesList := filesList([]string{coswidDisplayFile}, []string{coswidDisplayDir}, ".cbor")
+        filesList := gatherFiles([]string{coswidDisplayFile}, []string{coswidDisplayDir}, ".cbor")
         if len(filesList) == 0 {
             return fmt.Errorf("no files found")
         }
@@ -53,6 +56,41 @@ func checkCoswidDisplayArgs() error {
     }
     return nil
 }
+
+func gatherFiles(files []string, dirs []string, ext string) []string {
+    var collected []string
+
+    // Collect files from specified file paths
+    for _, file := range files {
+        if file != "" {
+            exists, err := afero.Exists(fs, file)
+            if err == nil && exists {
+                collected = append(collected, file)
+            }
+        }
+    }
+
+    // Collect files from specified directories
+    for _, dir := range dirs {
+        if dir != "" {
+            exists, err := afero.Exists(fs, dir)
+            if err == nil && exists {
+                afero.Walk(fs, dir, func(path string, info os.FileInfo, err error) error {
+                    if err != nil {
+                        return nil
+                    }
+                    if !info.IsDir() && filepath.Ext(path) == ext {
+                        collected = append(collected, path)
+                    }
+                    return nil
+                })
+            }
+        }
+    }
+
+    return collected
+}
+
 
 func displayCoswid(file string) error {
     var (
