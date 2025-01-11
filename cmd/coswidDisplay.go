@@ -61,6 +61,7 @@ func checkCoswidDisplayArgs() error {
 func gatherFiles(files []string, dirs []string, ext string) []string {
     collectedMap := make(map[string]struct{})
     var collected []string
+    var walkErr error
 
     // Collect files from specified file paths
     for _, file := range files {
@@ -74,16 +75,18 @@ func gatherFiles(files []string, dirs []string, ext string) []string {
         if dir != "" {
             exists, err := afero.Exists(fs, dir)
             if err == nil && exists {
-                afero.Walk(fs, dir, func(path string, info os.FileInfo, err error) error {
+                walkErr = afero.Walk(fs, dir, func(path string, info os.FileInfo, err error) error {
                     if err != nil {
-                        fmt.Printf("Error accessing path %s: %v\n", path, err)
-                        return nil
+                        return fmt.Errorf("error accessing path %s: %v", path, err)
                     }
                     if !info.IsDir() && filepath.Ext(path) == ext {
                         collectedMap[path] = struct{}{}
                     }
                     return nil
                 })
+                if walkErr != nil {
+                    fmt.Printf("Warning: error walking directory %s: %v\n", dir, walkErr)
+                }
             }
         }
     }

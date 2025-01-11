@@ -134,6 +134,13 @@ func init() {
     coswidCmd.AddCommand(coswidCreateCmd)
     coswidCreateCmd.Flags().StringVarP(&coswidCreateTemplate, "template", "t", "", "a CoSWID template file (in JSON format)")
     coswidCreateCmd.Flags().StringVarP(&coswidCreateOutputDir, "output-dir", "o", ".", "output directory for CBOR file")
-    coswidCreateCmd.MarkFlagRequired("template")
-    coswidCreateCmd.MarkFlagRequired("output-dir")
+    
+    // Handle required flag errors
+    if err := coswidCreateCmd.MarkFlagRequired("template"); err != nil {
+        // Since we're in init(), we can only panic on critical errors
+        panic(fmt.Sprintf("Failed to mark 'template' flag as required: %v", err))
+    }
+    if err := coswidCreateCmd.MarkFlagRequired("output-dir"); err != nil {
+        panic(fmt.Sprintf("Failed to mark 'output-dir' flag as required: %v", err))
+    }
 }
