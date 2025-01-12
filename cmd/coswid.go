@@ -1,18 +1,19 @@
 package cmd
 
 import (
-    "fmt"
-
     "github.com/spf13/cobra"
+    "fmt"
 )
 
 var coswidCmd = &cobra.Command{
     Use:   "coswid",
-    Short: "CoSWID manipulation",
-    // Removed the Run function to allow subcommand delegation
+    Short: "A brief description of your command",
+    RunE: func(cmd *cobra.Command, args []string) error {
+        fmt.Println("coswid command executed")
+        return nil
+    },
 }
 
 func init() {
-    fmt.Println("Initializing coswid command")
     rootCmd.AddCommand(coswidCmd)
 }
