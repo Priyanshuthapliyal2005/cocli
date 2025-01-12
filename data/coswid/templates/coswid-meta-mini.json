@@ -1,8 +1,13 @@
 {
-  "signer": {
+  "tag-id": "123e4567-e89b-12d3-a456-426614174000",
+  "tag-version": 1,
+  "software-name": "Example Software",
+  "profile": "http://example.com/cosmid/profile/1",
+  "entity": [
+    {
       "entity-name": "Example Ltd signing key",
-      "role": [
-          "tag-creator"
-      ]
-  }
+      "reg-id": "https://example.com",
+      "role": ["tag-creator"]
+    }
+  ]
 }

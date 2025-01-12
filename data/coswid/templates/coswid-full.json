@@ -4,33 +4,32 @@
   "software-name": "Example Software",
   "profile": "http://example.com/cosmid/profile/1",
   "validity": {
-      "not-before": "2023-01-01T00:00:00Z",
-      "not-after": "2025-01-01T00:00:00Z"
+    "not-before": "2023-01-01T00:00:00Z",
+    "not-after": "2025-01-01T00:00:00Z"
   },
   "entity": [
-      {
-          "entity-name": "Example Ltd.",
-          "reg-id": "https://example.com",
-          "role": [
-              "tag-creator"
-          ]
-      }
+    {
+      "entity-name": "Example Ltd signing key",
+      "reg-id": "https://example.com",
+      "role": ["tag-creator"]
+    }
   ],
+  "version-scheme": "multipartnumeric",
   "link": [
-      {
-          "rel": "parent",
-          "href": "https://parent.example/rims/ccb3aa85-61b4-40f1-848e-02ad6e8a254b",
-          "thumbprint": {
-              "hash-alg-id": 1,
-              "hash-value": "5Fty9cDAtXLbTY06t+l/No/3TmI0eoJN7LZ6hOUiTXU="
-          }
+    {
+      "rel": "parent",
+      "href": "https://parent.example/rims/ccb3aa85-61b4-40f1-848e-02ad6e8a254b",
+      "thumbprint": {
+        "hash-alg-id": 1,
+        "hash-value": "5Fty9cDAtXLbTY06t+l/No/3TmI0eoJN7LZ6hOUiTXU="
       }
+    }
   ],
   "payload": {
-      "data": "Sample payload data"
+    "data": "Sample payload data"
   },
   "evidence": {
-      "type": "example-evidence",
-      "value": "Evidence details"
+    "type": "example-evidence",
+    "value": "Evidence details"
   }
 }
